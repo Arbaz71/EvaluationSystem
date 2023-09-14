@@ -3,8 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EvaluationSystem.Models
 {
-    public class Student:User
+    public class Student
     {
+        [Key]
         public int StudentId { get; set; }
         public string Name { get; set; }
         public byte[] ProfilePicture { get; set; }

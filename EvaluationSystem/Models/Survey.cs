@@ -2,7 +2,7 @@
 
 namespace EvaluationSystem.Models
 {
-    public class Surveys
+    public class Survey
     {
         [Key]
         public int SurveyId { get; set; }
