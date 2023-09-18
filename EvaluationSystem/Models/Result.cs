@@ -7,10 +7,7 @@ namespace EvaluationSystem.Models
     {
         [Key]
         public int ResultId { get; set; }
-        [ForeignKey("Student")]
-        public int StudentId { get; set; }
         public string CourseName { get; set; }
         public double Score { get; set; }
-        public Student Student { get; set; }
     }
 }

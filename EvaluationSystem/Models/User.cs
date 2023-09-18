@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EvaluationSystem.Enum;
+using System.ComponentModel.DataAnnotations;
 
 namespace EvaluationSystem.Models
 {
@@ -9,5 +10,6 @@ namespace EvaluationSystem.Models
         public string Username { get; set; }
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public UserRole userRole { get; set; } = UserRole.Student;
     }
 }
