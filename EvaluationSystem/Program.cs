@@ -1,7 +1,11 @@
 using EvaluationSystem.Data;
 using EvaluationSystem.Services.JWTTokenServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace EvaluationSystem
 {
@@ -12,10 +16,19 @@ namespace EvaluationSystem
 
             var builder = WebApplication.CreateBuilder(args);
             double jwtDurationDays = 30;
+
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json") // Load configuration from appsettings.json
+                .Build();
+
             string jwtKey = GenerateRandomKey(32);
 
 
             // Add services to the container.
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+            });
 
             builder.Services.AddControllers();
             var connectionString = builder
@@ -23,6 +36,13 @@ namespace EvaluationSystem
                            .GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+            //Role Based Authorization
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+            });
+
             //Services Dependency Injection
 
             builder.Services.AddScoped<IJWTService, JWTService>(provider =>
@@ -30,8 +50,56 @@ namespace EvaluationSystem
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            //  builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] { }
+        }
+    });
+            });
+
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            });
+
+
             var app = builder.Build();
+
 
 
             // Configure the HTTP request pipeline.
@@ -44,6 +112,8 @@ namespace EvaluationSystem
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
+            app.UseAuthentication();
 
             app.MapControllers();
 
