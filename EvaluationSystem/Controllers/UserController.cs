@@ -1,4 +1,5 @@
 ﻿using EvaluationSystem.Services.JWTTokenServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EvaluationSystem.Controllers
@@ -14,6 +15,7 @@ namespace EvaluationSystem.Controllers
             _jwtTokenService = jwtTokenService;
         }
         [HttpPost("login")]
+        [AllowAnonymous]
         public IActionResult Login([FromBody] Models.LoginModel loginModel)
         {
             try
@@ -47,6 +49,7 @@ namespace EvaluationSystem.Controllers
                 {
                     return Unauthorized("Invalid Credentials");
                 }
+
                 var token = _jwtTokenService.GenerateToken(userId, userRole);
 
                 return Ok(new { Token = token });

@@ -1,10 +1,8 @@
 using EvaluationSystem.Data;
 using EvaluationSystem.Services.JWTTokenServices;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace EvaluationSystem
@@ -15,13 +13,14 @@ namespace EvaluationSystem
         {
 
             var builder = WebApplication.CreateBuilder(args);
+
             double jwtDurationDays = 30;
 
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json") // Load configuration from appsettings.json
-                .Build();
+            //var configuration = new ConfigurationBuilder()
+            //    .AddJsonFile("appsettings.json") // Load configuration from appsettings.json
+            //    .Build();
 
-            string jwtKey = GenerateRandomKey(32);
+            //   string jwtKey = GenerateRandomKey(32);
 
 
             // Add services to the container.
@@ -45,8 +44,10 @@ namespace EvaluationSystem
 
             //Services Dependency Injection
 
-            builder.Services.AddScoped<IJWTService, JWTService>(provider =>
-                new JWTService(jwtKey, jwtDurationDays));
+            //builder.Services.AddScoped<IJWTService, JWTService>(provider =>
+            //    new JWTService(jwtKey, jwtDurationDays));
+            builder.Services.AddScoped<IJWTService, JWTService>();
+
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -79,23 +80,40 @@ namespace EvaluationSystem
     });
             });
 
-
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
+            builder.Services.AddAuthentication().AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidAudience = Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
                 };
             });
+
+            //builder.Services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //}).AddJwtBearer(options =>
+            //{
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuer = true,
+            //        ValidateAudience = true,
+            //        ValidateIssuerSigningKey = true,
+            //        //ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            //        //ValidAudience = builder.Configuration["Jwt:Audience"],
+
+            //        ValidIssuer = "http://yourdomain.com",
+            //        ValidAudience = "YourAudience",
+
+
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            //    };
+            //});
 
 
             var app = builder.Build();
@@ -120,15 +138,15 @@ namespace EvaluationSystem
             app.Run();
         }
 
-        private static string GenerateRandomKey(int lengthInBytes)
-        {
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                byte[] keyBytes = new byte[lengthInBytes];
-                rng.GetBytes(keyBytes);
-                return Convert.ToBase64String(keyBytes);
-            }
-        }
+        //private static string GenerateRandomKey(int lengthInBytes)
+        //{
+        //    using (var rng = new RNGCryptoServiceProvider())
+        //    {
+        //        byte[] keyBytes = new byte[lengthInBytes];
+        //        rng.GetBytes(keyBytes);
+        //        return Convert.ToBase64String(keyBytes);
+        //    }
+        //}
 
     }
 }
