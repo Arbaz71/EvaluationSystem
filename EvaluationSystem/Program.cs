@@ -7,6 +7,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace EvaluationSystem
 {
@@ -23,7 +24,8 @@ namespace EvaluationSystem
             //    .AddJsonFile("appsettings.json") // Load configuration from appsettings.json
             //    .Build();
 
-             string jwtKey = GenerateRandomKey(32);
+            //string jwtKey = GenerateRandomKey(32);
+            string jwtKey = builder.Configuration["Jwt:Key"];
 
 
             // Add services to the container.
@@ -83,18 +85,40 @@ namespace EvaluationSystem
     });
             });
 
-            builder.Services.AddAuthentication().AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-                };
-            });
+            //builder.Services.AddAuthentication().AddJwtBearer(options =>
+            //{
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuer = true,
+            //        ValidateAudience = true,
+            //        ValidateIssuerSigningKey = true,
+            //        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            //        ValidAudience = builder.Configuration["Jwt:Audience"],
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            //    };
+            //});
+
+            byte[] keyBytes = Convert.FromBase64String(jwtKey);
+
+            // Create a SecurityKey from the key bytes
+            var securityKey = new SymmetricSecurityKey(keyBytes);
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                        .AddJwtBearer(options =>
+                        {
+                            options.TokenValidationParameters = new TokenValidationParameters
+                            {
+                                ValidateIssuer = true, // Set to true if you want to validate the issuer
+                                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                                ValidAudience = builder.Configuration["Jwt:Audience"],
+                                ValidateAudience = true, // Set to true if you want to validate the audience
+                                ValidateLifetime = true, // Set to true if you want to check token expiration
+                                ClockSkew = TimeSpan.Zero, // Set the clock skew to zero for better accuracy
+                                IssuerSigningKey = securityKey, // Use the same key for validation
+                                ValidateIssuerSigningKey = true, // Set to true to validate the signing key
+                            };
+                        });
+
 
             //builder.Services.AddAuthentication(options =>
             //{

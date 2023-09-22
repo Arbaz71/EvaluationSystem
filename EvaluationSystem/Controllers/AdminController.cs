@@ -9,7 +9,7 @@ namespace EvaluationSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
 
     public class AdminController : ControllerBase
     {

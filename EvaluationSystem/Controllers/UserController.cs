@@ -1,6 +1,7 @@
 ﻿using EvaluationSystem.Services.JWTTokenServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
 
 namespace EvaluationSystem.Controllers
 {
@@ -16,10 +17,12 @@ namespace EvaluationSystem.Controllers
         }
         [HttpPost("login")]
         [AllowAnonymous]
-        public IActionResult Login([FromBody] Models.LoginModel loginModel)
+        public object Login([FromBody] Models.LoginModel loginModel)
         {
             try
             {
+
+                
                 string userId;
                 string userRole;
 
