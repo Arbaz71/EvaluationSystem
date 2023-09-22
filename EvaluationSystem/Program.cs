@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Security.Cryptography;
 
 namespace EvaluationSystem
 {
@@ -20,7 +23,7 @@ namespace EvaluationSystem
             //    .AddJsonFile("appsettings.json") // Load configuration from appsettings.json
             //    .Build();
 
-            //   string jwtKey = GenerateRandomKey(32);
+             string jwtKey = GenerateRandomKey(32);
 
 
             // Add services to the container.
@@ -44,9 +47,9 @@ namespace EvaluationSystem
 
             //Services Dependency Injection
 
-            //builder.Services.AddScoped<IJWTService, JWTService>(provider =>
-            //    new JWTService(jwtKey, jwtDurationDays));
-            builder.Services.AddScoped<IJWTService, JWTService>();
+            builder.Services.AddScoped<IJWTService, JWTService>(provider =>
+                new JWTService(jwtKey, jwtDurationDays));
+            //   builder.Services.AddScoped<IJWTService, JWTService>();
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -138,15 +141,15 @@ namespace EvaluationSystem
             app.Run();
         }
 
-        //private static string GenerateRandomKey(int lengthInBytes)
-        //{
-        //    using (var rng = new RNGCryptoServiceProvider())
-        //    {
-        //        byte[] keyBytes = new byte[lengthInBytes];
-        //        rng.GetBytes(keyBytes);
-        //        return Convert.ToBase64String(keyBytes);
-        //    }
-        //}
+        private static string GenerateRandomKey(int lengthInBytes)
+        {
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                byte[] keyBytes = new byte[lengthInBytes];
+                rng.GetBytes(keyBytes);
+                return Convert.ToBase64String(keyBytes);
+            }
+        }
 
     }
 }
