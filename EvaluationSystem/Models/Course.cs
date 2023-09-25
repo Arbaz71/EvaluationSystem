@@ -12,9 +12,9 @@ namespace EvaluationSystem.Models
         public string CourseName { get; set; }
         public int Credit { get; set; }
         public CourseType CourseType { get; set; }
-        [ForeignKey(nameof(SemesterId))]
-        public int SemesterId { get; set; }
         public Semester Semester { get; set; }
+        public Instructor Instructor { get; set; }
+        public virtual ICollection<Student> Students { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }

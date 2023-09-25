@@ -19,6 +19,15 @@ namespace EvaluationSystem.Data
         
         public DbSet<Survey>Surveys { get; set; }
         public DbSet<User> Users { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Course>()
+                .HasOne(c => c.Instructor)           // Course has one Instructor
+                .WithOne(i => i.Course)              // Instructor has one Course
+                .HasForeignKey<Instructor>(i => i.CourseCode);  // Foreign key in Instructor
+        }
 
     }
 }
