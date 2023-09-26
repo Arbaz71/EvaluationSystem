@@ -1,4 +1,5 @@
-﻿using EvaluationSystem.Models;
+﻿using EvaluationSystem.DTO;
+using EvaluationSystem.Models;
 using EvaluationSystem.Services.CourseServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,7 +33,7 @@ namespace EvaluationSystem.Controllers
             }
         }
         [HttpPost("Add")]
-        public IActionResult AddCourses([FromBody] Course course)
+        public IActionResult AddCourses([FromBody] AddCourseDto course)
         {
             try
             {
@@ -40,7 +41,7 @@ namespace EvaluationSystem.Controllers
                 {
                     return BadRequest("Course not found");
                 }
-                _courseService.AddCourse(course);
+                _courseService.AddCourseDto(course);
                 return Ok(course);
                     
             }

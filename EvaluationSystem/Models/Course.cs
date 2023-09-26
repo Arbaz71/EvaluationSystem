@@ -13,7 +13,9 @@ namespace EvaluationSystem.Models
         public int Credit { get; set; }
         public CourseType CourseType { get; set; }
         public Semester Semester { get; set; }
+        public string SemesterName { get; set; }
         public Instructor Instructor { get; set; }
+        public string InstructorName { get; set; }
         public virtual ICollection<Student> Students { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

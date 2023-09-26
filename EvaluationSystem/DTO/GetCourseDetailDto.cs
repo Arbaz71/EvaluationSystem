@@ -5,8 +5,8 @@ namespace EvaluationSystem.DTO
 {
     public class GetCourseDetailDto
     {
-        public string Name { get; set; }
-        public int Code { get; set; }
+        public string CourseName { get; set; }
+        public int CourseCode { get; set; }
         public int Credit { get; set; }
         public CourseType CourseType { get; set; }
         public string InstructorName { get; set; }

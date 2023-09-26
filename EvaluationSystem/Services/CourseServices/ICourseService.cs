@@ -1,11 +1,13 @@
-﻿using EvaluationSystem.Models;
+﻿using EvaluationSystem.DTO;
+using EvaluationSystem.Models;
 
 namespace EvaluationSystem.Services.CourseServices
 {
     public interface ICourseService
     {
-        IEnumerable<Course> GetAllCourses();
-        void AddCourse(Course course);
-        
+        Task<IEnumerable<GetCourseDetailDto>> GetAllCoursesAsync();
+        Task<int> AddCourseAsync(AddCourseDto addCourse);
+
+
     }
 }
