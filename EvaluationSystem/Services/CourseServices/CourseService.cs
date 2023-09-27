@@ -1,6 +1,7 @@
 ﻿using EvaluationSystem.Data;
 using EvaluationSystem.DTO;
 using EvaluationSystem.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EvaluationSystem.Services.CourseServices
 {
@@ -13,21 +14,23 @@ namespace EvaluationSystem.Services.CourseServices
         }
         public async Task<IEnumerable<GetCourseDetailDto>> GetAllCoursesAsync()
         {
-            var course = await _context.Courses
-                .Select(course=> new GetCourseDetailDto
-                {
+            var courses = await _context.Courses
+         .Select(course => new GetCourseDetailDto
+         {
+             CourseCode = course.CourseCode,
+             CourseName = course.CourseName,
+             Credit = course.Credit,
+             InstructorName = course.InstructorName,
+             CourseType = course.CourseType,
+             SemesterName = course.SemesterName,
+             Students = _context.CourseStudents
+                 .Where(cs => cs.CourseCode == course.CourseCode)
+                 .Select(cs => cs.Student.StudentName)
+                 .ToList()
+         })
+         .ToListAsync();
 
-                    CourseCode= course.CourseCode,
-                    CourseName= course.CourseName,
-                    Credit= course.Credit,
-                    InstructorName=course.InstructorName,
-                    CourseType= course.CourseType,
-                    SemesterName= course.SemesterName,
-                    
-
-                }
-                )
-
+            return courses;
         }
         public async Task<int> AddCourseAsync(AddCourseDto addCourse)
         {
@@ -41,6 +44,7 @@ namespace EvaluationSystem.Services.CourseServices
             };
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
+            return course.CourseCode;
         }
        
 

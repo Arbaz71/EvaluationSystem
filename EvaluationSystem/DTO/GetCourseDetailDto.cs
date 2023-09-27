@@ -12,6 +12,8 @@ namespace EvaluationSystem.DTO
         public string InstructorName { get; set; }
         public string SemesterName { get; set; }
         public List<Enrollment> StudentName {  get; set; }
+        public List<string> Students { get; set; }
+
 
     }
 }

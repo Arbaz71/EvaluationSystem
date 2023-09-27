@@ -7,6 +7,7 @@ namespace EvaluationSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class UserController : ControllerBase
     {
         private readonly IJWTService _jwtTokenService;

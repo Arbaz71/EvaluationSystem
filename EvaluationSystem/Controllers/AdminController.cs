@@ -10,7 +10,7 @@ namespace EvaluationSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [AllowAnonymous]//[Authorize]
 
     public class AdminController : ControllerBase
     {
@@ -24,7 +24,7 @@ namespace EvaluationSystem.Controllers
         {
             try
             {
-                var courses= _courseService.GetAllCourses();
+                var courses= _courseService.GetAllCoursesAsync();
                 return Ok(courses);
             }
             catch(Exception ex)
@@ -41,7 +41,7 @@ namespace EvaluationSystem.Controllers
                 {
                     return BadRequest("Course not found");
                 }
-                _courseService.AddCourseDto(course);
+                _courseService.AddCourseAsync(course);
                 return Ok(course);
                     
             }

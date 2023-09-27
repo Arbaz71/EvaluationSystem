@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using EvaluationSystem.Services.CourseServices;
 
 namespace EvaluationSystem
 {
@@ -51,6 +52,7 @@ namespace EvaluationSystem
 
             builder.Services.AddScoped<IJWTService, JWTService>(provider =>
                 new JWTService(jwtKey, jwtDurationDays));
+            builder.Services.AddScoped<ICourseService, CourseService>();
             //   builder.Services.AddScoped<IJWTService, JWTService>();
 
 
