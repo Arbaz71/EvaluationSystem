@@ -9,6 +9,7 @@ namespace EvaluationSystem.Models
 
         public int StudentId { get; set; }
         public string StudentName { get; set; }
+        public bool IsRequest { get; set; }
 
         public int CourseCode { get; set; }
 
