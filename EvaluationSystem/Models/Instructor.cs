@@ -11,7 +11,7 @@ namespace EvaluationSystem.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }    
         public bool IsResigned { get; set; }
-        public int? CourseCode { get; set; }
+        public string CourseCode { get; set; }
         public Course Course { get; set; }
         public virtual ICollection<Survey> Surveys { get; set; }
 

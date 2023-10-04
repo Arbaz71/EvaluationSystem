@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EvaluationSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230925091927_2nd")]
-    partial class _2nd
+    [Migration("20231004121342_First")]
+    partial class First
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,11 +55,8 @@ namespace EvaluationSystem.Migrations
 
             modelBuilder.Entity("EvaluationSystem.Models.Course", b =>
                 {
-                    b.Property<int>("CourseCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseCode"));
+                    b.Property<string>("CourseCode")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CourseName")
                         .IsRequired()
@@ -74,8 +71,16 @@ namespace EvaluationSystem.Migrations
                     b.Property<int>("Credit")
                         .HasColumnType("int");
 
+                    b.Property<string>("InstructorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("SemesterId")
                         .HasColumnType("int");
+
+                    b.Property<string>("SemesterName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -87,6 +92,39 @@ namespace EvaluationSystem.Migrations
                     b.ToTable("Courses");
                 });
 
+            modelBuilder.Entity("EvaluationSystem.Models.CourseStudent", b =>
+                {
+                    b.Property<int>("CourseStudentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseStudentId"));
+
+                    b.Property<string>("CourseCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CourseCode1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("CourseStudentId");
+
+                    b.HasIndex("CourseCode1");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("CourseStudents");
+                });
+
             modelBuilder.Entity("EvaluationSystem.Models.Enrollment", b =>
                 {
                     b.Property<int>("EnrollmentId")
@@ -95,25 +133,49 @@ namespace EvaluationSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnrollmentId"));
 
-                    b.Property<int>("CourseCode")
-                        .HasColumnType("int");
+                    b.Property<string>("CourseCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CourseCode1")
+                    b.Property<string>("CourseCode1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CourseName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Credit")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EnrollmentDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InstructorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRequest")
+                        .HasColumnType("bit");
+
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
+
+                    b.Property<string>("StudentName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EnrollmentId");
 
                     b.HasIndex("CourseCode1");
 
+                    b.HasIndex("InstructorId");
+
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Enrollment");
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("EvaluationSystem.Models.EnrollmentRequest", b =>
@@ -175,8 +237,9 @@ namespace EvaluationSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InstructorId"));
 
-                    b.Property<int?>("CourseCode")
-                        .HasColumnType("int");
+                    b.Property<string>("CourseCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("InstructorName")
                         .IsRequired()
@@ -196,10 +259,9 @@ namespace EvaluationSystem.Migrations
                     b.HasKey("InstructorId");
 
                     b.HasIndex("CourseCode")
-                        .IsUnique()
-                        .HasFilter("[CourseCode] IS NOT NULL");
+                        .IsUnique();
 
-                    b.ToTable("Instructor");
+                    b.ToTable("Instructors");
                 });
 
             modelBuilder.Entity("EvaluationSystem.Models.Question", b =>
@@ -280,8 +342,8 @@ namespace EvaluationSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
 
-                    b.Property<int?>("CourseCode")
-                        .HasColumnType("int");
+                    b.Property<string>("CourseCode")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -309,6 +371,34 @@ namespace EvaluationSystem.Migrations
                     b.ToTable("Student");
                 });
 
+            modelBuilder.Entity("EvaluationSystem.Models.StudentLeaveRequest", b =>
+                {
+                    b.Property<int>("StudentLeaveRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentLeaveRequestId"));
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RequestDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("StudentLeaveRequestId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("StudentLeaveRequests");
+                });
+
             modelBuilder.Entity("EvaluationSystem.Models.Survey", b =>
                 {
                     b.Property<int>("SurveyId")
@@ -333,6 +423,46 @@ namespace EvaluationSystem.Migrations
                     b.HasIndex("InstructorId");
 
                     b.ToTable("Surveys");
+                });
+
+            modelBuilder.Entity("EvaluationSystem.Models.SurveyQuestion", b =>
+                {
+                    b.Property<int>("SurveyQuestionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SurveyQuestionId"));
+
+                    b.Property<string>("QuestionText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SurveyId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SurveyQuestionId");
+
+                    b.HasIndex("SurveyId");
+
+                    b.ToTable("SurveyQuestions");
+                });
+
+            modelBuilder.Entity("EvaluationSystem.Models.SurveyResponse", b =>
+                {
+                    b.Property<int>("SurveyResponseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SurveyResponseId"));
+
+                    b.Property<int?>("SurveyQuestionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SurveyResponseId");
+
+                    b.HasIndex("SurveyQuestionId");
+
+                    b.ToTable("SurveyResponses");
                 });
 
             modelBuilder.Entity("EvaluationSystem.Models.User", b =>
@@ -381,11 +511,32 @@ namespace EvaluationSystem.Migrations
                     b.Navigation("Semester");
                 });
 
+            modelBuilder.Entity("EvaluationSystem.Models.CourseStudent", b =>
+                {
+                    b.HasOne("EvaluationSystem.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseCode1");
+
+                    b.HasOne("EvaluationSystem.Models.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("EvaluationSystem.Models.Enrollment", b =>
                 {
                     b.HasOne("EvaluationSystem.Models.Course", "Course")
                         .WithMany()
-                        .HasForeignKey("CourseCode1")
+                        .HasForeignKey("CourseCode1");
+
+                    b.HasOne("EvaluationSystem.Models.Instructor", "Instructor")
+                        .WithMany()
+                        .HasForeignKey("InstructorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -396,6 +547,8 @@ namespace EvaluationSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
+
+                    b.Navigation("Instructor");
 
                     b.Navigation("Student");
                 });
@@ -423,7 +576,9 @@ namespace EvaluationSystem.Migrations
                 {
                     b.HasOne("EvaluationSystem.Models.Course", "Course")
                         .WithOne("Instructor")
-                        .HasForeignKey("EvaluationSystem.Models.Instructor", "CourseCode");
+                        .HasForeignKey("EvaluationSystem.Models.Instructor", "CourseCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Course");
                 });
@@ -449,11 +604,40 @@ namespace EvaluationSystem.Migrations
                         .HasForeignKey("CourseCode");
                 });
 
+            modelBuilder.Entity("EvaluationSystem.Models.StudentLeaveRequest", b =>
+                {
+                    b.HasOne("EvaluationSystem.Models.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("EvaluationSystem.Models.Survey", b =>
                 {
                     b.HasOne("EvaluationSystem.Models.Instructor", null)
                         .WithMany("Surveys")
                         .HasForeignKey("InstructorId");
+                });
+
+            modelBuilder.Entity("EvaluationSystem.Models.SurveyQuestion", b =>
+                {
+                    b.HasOne("EvaluationSystem.Models.Survey", "Survey")
+                        .WithMany()
+                        .HasForeignKey("SurveyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Survey");
+                });
+
+            modelBuilder.Entity("EvaluationSystem.Models.SurveyResponse", b =>
+                {
+                    b.HasOne("EvaluationSystem.Models.SurveyQuestion", null)
+                        .WithMany("SurveyResponses")
+                        .HasForeignKey("SurveyQuestionId");
                 });
 
             modelBuilder.Entity("EvaluationSystem.Models.Course", b =>
@@ -491,6 +675,11 @@ namespace EvaluationSystem.Migrations
             modelBuilder.Entity("EvaluationSystem.Models.Survey", b =>
                 {
                     b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("EvaluationSystem.Models.SurveyQuestion", b =>
+                {
+                    b.Navigation("SurveyResponses");
                 });
 #pragma warning restore 612, 618
         }

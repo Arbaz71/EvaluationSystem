@@ -8,7 +8,7 @@ namespace EvaluationSystem.Models
     {
         [Key]
         
-        public int CourseCode { get; set; }
+        public string CourseCode { get; set; }
         public string CourseName { get; set; }
         public int Credit { get; set; }
         public CourseType CourseType { get; set; }

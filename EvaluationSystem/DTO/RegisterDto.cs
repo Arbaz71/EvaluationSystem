@@ -1,11 +1,10 @@
 ﻿namespace EvaluationSystem.DTO
 {
-    public class UnRegisteredClassDto
+    public class RegisterDto
     {
         public string CourseName { get; set; }
         public string CourseCode { get; set; }
-        public int Credit { get;set; }
+        public int Credit { set; get; }
         public string InstructorName { get; set; }
-        public Action ActionType { get; set; }  
     }
 }

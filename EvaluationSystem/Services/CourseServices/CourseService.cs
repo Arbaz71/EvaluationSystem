@@ -32,7 +32,7 @@ namespace EvaluationSystem.Services.CourseServices
 
             return courses;
         }
-        public async Task<int> AddCourseAsync(AddCourseDto addCourse)
+        public async Task<Course> AddCourseAsync(AddCourseDto addCourse)
         {
             var course = new Course
             {
@@ -44,7 +44,7 @@ namespace EvaluationSystem.Services.CourseServices
             };
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
-            return course.CourseCode;
+            return course;
         }
        
 

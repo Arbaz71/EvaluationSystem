@@ -52,11 +52,8 @@ namespace EvaluationSystem.Migrations
 
             modelBuilder.Entity("EvaluationSystem.Models.Course", b =>
                 {
-                    b.Property<int>("CourseCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseCode"));
+                    b.Property<string>("CourseCode")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CourseName")
                         .IsRequired()
@@ -100,11 +97,12 @@ namespace EvaluationSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseStudentId"));
 
-                    b.Property<int>("CourseCode")
-                        .HasColumnType("int");
+                    b.Property<string>("CourseCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CourseCode1")
-                        .HasColumnType("int");
+                    b.Property<string>("CourseCode1")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -132,14 +130,32 @@ namespace EvaluationSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnrollmentId"));
 
-                    b.Property<int>("CourseCode")
-                        .HasColumnType("int");
+                    b.Property<string>("CourseCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CourseCode1")
+                    b.Property<string>("CourseCode1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CourseName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Credit")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EnrollmentDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InstructorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRequest")
+                        .HasColumnType("bit");
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
@@ -151,6 +167,8 @@ namespace EvaluationSystem.Migrations
                     b.HasKey("EnrollmentId");
 
                     b.HasIndex("CourseCode1");
+
+                    b.HasIndex("InstructorId");
 
                     b.HasIndex("StudentId");
 
@@ -216,8 +234,9 @@ namespace EvaluationSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InstructorId"));
 
-                    b.Property<int?>("CourseCode")
-                        .HasColumnType("int");
+                    b.Property<string>("CourseCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("InstructorName")
                         .IsRequired()
@@ -237,8 +256,7 @@ namespace EvaluationSystem.Migrations
                     b.HasKey("InstructorId");
 
                     b.HasIndex("CourseCode")
-                        .IsUnique()
-                        .HasFilter("[CourseCode] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Instructors");
                 });
@@ -321,8 +339,8 @@ namespace EvaluationSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
 
-                    b.Property<int?>("CourseCode")
-                        .HasColumnType("int");
+                    b.Property<string>("CourseCode")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -494,9 +512,7 @@ namespace EvaluationSystem.Migrations
                 {
                     b.HasOne("EvaluationSystem.Models.Course", "Course")
                         .WithMany()
-                        .HasForeignKey("CourseCode1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourseCode1");
 
                     b.HasOne("EvaluationSystem.Models.Student", "Student")
                         .WithMany()
@@ -513,7 +529,11 @@ namespace EvaluationSystem.Migrations
                 {
                     b.HasOne("EvaluationSystem.Models.Course", "Course")
                         .WithMany()
-                        .HasForeignKey("CourseCode1")
+                        .HasForeignKey("CourseCode1");
+
+                    b.HasOne("EvaluationSystem.Models.Instructor", "Instructor")
+                        .WithMany()
+                        .HasForeignKey("InstructorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -524,6 +544,8 @@ namespace EvaluationSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
+
+                    b.Navigation("Instructor");
 
                     b.Navigation("Student");
                 });
@@ -551,7 +573,9 @@ namespace EvaluationSystem.Migrations
                 {
                     b.HasOne("EvaluationSystem.Models.Course", "Course")
                         .WithOne("Instructor")
-                        .HasForeignKey("EvaluationSystem.Models.Instructor", "CourseCode");
+                        .HasForeignKey("EvaluationSystem.Models.Instructor", "CourseCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Course");
                 });

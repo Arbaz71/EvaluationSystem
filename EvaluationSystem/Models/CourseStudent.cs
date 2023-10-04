@@ -6,7 +6,7 @@ namespace EvaluationSystem.Models
     {
         [Key]
         public int CourseStudentId { get; set; }
-        public int CourseCode { get; set; }
+        public string CourseCode { get; set; }
         public Course Course { get; set; }
         public int StudentId { get; set; }
         public Student Student { get; set; }

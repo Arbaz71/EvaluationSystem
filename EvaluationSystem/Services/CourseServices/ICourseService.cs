@@ -6,7 +6,7 @@ namespace EvaluationSystem.Services.CourseServices
     public interface ICourseService
     {
         Task<IEnumerable<GetCourseDetailDto>> GetAllCoursesAsync();
-        Task<int> AddCourseAsync(AddCourseDto addCourse);
+        Task<Course> AddCourseAsync(AddCourseDto addCourse);
 
 
     }

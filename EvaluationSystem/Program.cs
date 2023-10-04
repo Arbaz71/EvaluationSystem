@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using EvaluationSystem.Services.CourseServices;
 using EvaluationSystem.Services.SemesterServices;
 using System.Text.Json.Serialization;
+using EvaluationSystem.Services.RequestServices;
+using EvaluationSystem.Services.RegisterStudentServices;
 
 namespace EvaluationSystem
 {
@@ -57,6 +59,11 @@ namespace EvaluationSystem
                 new JWTService(jwtKey, jwtDurationDays));
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<ISemesterService, SemesterService>();
+            builder.Services.AddScoped<IRequestService, RequestService>();
+            builder.Services.AddScoped<IRegisterStudentService, RegisterStudentService>();
+
+
+
             //   builder.Services.AddScoped<IJWTService, JWTService>();
 
 
