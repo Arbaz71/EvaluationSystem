@@ -88,7 +88,7 @@ namespace EvaluationSystem.Controllers
         {
             try
             {
-                var enrollrequest= await _requestService.SendRequestAsync();
+                var enrollrequest= await _requestService.GetAllRequestAsync();  
                 return Ok(enrollrequest);
             }
             catch(Exception ex)

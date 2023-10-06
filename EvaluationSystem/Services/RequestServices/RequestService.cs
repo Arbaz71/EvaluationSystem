@@ -12,7 +12,7 @@ namespace EvaluationSystem.Services.RequestServices
         {
             _context = context;
         }
-        public async Task<object> GetAllRequest()
+        public async Task<object> GetAllRequestAsync()
         {
             var request = await _context.Enrollments
                 .Select(request => new EnrollRequestDto

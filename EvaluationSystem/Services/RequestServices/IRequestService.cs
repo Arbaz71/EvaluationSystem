@@ -3,5 +3,6 @@
     public interface IRequestService
     {
         Task<object> SendRequestAsync();
+        Task<object> GetAllRequestAsync();
     }
 }
